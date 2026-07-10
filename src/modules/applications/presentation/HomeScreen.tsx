@@ -1,11 +1,27 @@
 import React, { useEffect } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../app/navigation/types';
-import { AppScreen, BrandMarks, QuickActionCard, SectionCard } from '../../../shared/ui';
+import { AppScreen, CeamiWordmark, QuickActionCard } from '../../../shared/ui';
 import { colors, spacing } from '../../../shared/theme';
 import { useApplicationStore } from '../application/application.store';
 import { useAuthStore } from '../../auth/application/auth.store';
+
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
-export const HomeScreen = ({ navigation }: Props) => { const load = useApplicationStore((state) => state.load); const user = useAuthStore((state) => state.user); useEffect(() => { void load(); }, [load]); return <AppScreen><SectionCard style={styles.welcome}><BrandMarks compact /><Text style={styles.eyebrow}>CEAMI</Text><Text style={styles.welcomeTitle}>Bienvenida,{`\n`}{user?.firstName ?? 'Alejandra'}</Text><View style={styles.welcomeAccent} /></SectionCard><Text style={styles.heading}>Accesos rápidos</Text><Text style={styles.subtitle}>Selecciona una opción.</Text><View style={styles.grid}><QuickActionCard title="Nueva solicitud" subtitle="Comenzar proceso" icon="＋" active onPress={() => navigation.navigate('ApplicationStart')} /><QuickActionCard title="Generar una visita" subtitle="Capturar visita" icon="⌂" onPress={() => navigation.navigate('Placeholder', { title: 'Generar una visita', subtitle: 'Esta función estará disponible en una siguiente fase del MVP.' })} /><QuickActionCard title="Solicitudes" subtitle="Ver registros" icon="▭" onPress={() => navigation.navigate('ApplicationsList')} /><QuickActionCard title="Perfil" subtitle="Mi cuenta" icon="●" onPress={() => navigation.navigate('Placeholder', { title: 'Perfil', subtitle: 'Aquí podrás consultar y actualizar los datos de tu cuenta.' })} /><QuickActionCard title="Configuración" subtitle="Ajustes" icon="☷" onPress={() => navigation.navigate('Placeholder', { title: 'Configuración', subtitle: 'Aquí podrás configurar preferencias de la aplicación.' })} /></View></AppScreen>; };
-const styles = StyleSheet.create({ welcome: { backgroundColor: colors.primaryNavy, minHeight: 220, overflow: 'hidden' }, eyebrow: { color: '#CBD2E1', fontWeight: '700', fontSize: 16 }, welcomeTitle: { color: colors.surface, fontSize: 32, lineHeight: 38, fontWeight: '800', marginTop: spacing.sm }, welcomeAccent: { height: 8, width: 110, borderRadius: 5, backgroundColor: colors.cyan, marginTop: spacing.xl }, heading: { color: colors.textPrimary, fontSize: 32, fontWeight: '800', marginTop: spacing.sm }, subtitle: { color: colors.textSecondary, fontSize: 18, marginBottom: spacing.xl, marginTop: spacing.sm }, grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' } });
+
+export const HomeScreen = ({ navigation }: Props) => {
+  const load = useApplicationStore((state) => state.load);
+  const createDraft = useApplicationStore((state) => state.createDraft);
+  const currentApplication = useApplicationStore((state) => state.currentApplication);
+  const user = useAuthStore((state) => state.user);
+  useEffect(() => { void load(); }, [load]);
+
+  const startApplication = async () => {
+    if (!currentApplication || currentApplication.status === 'submitted') await createDraft();
+    navigation.navigate('ApplicationIntro');
+  };
+
+  return <AppScreen><View style={styles.intro}><CeamiWordmark /><Text style={styles.greeting}>Buenos días,{`\n`}{user?.firstName ?? 'Daniel'}</Text><Text style={styles.description}>Gestiona tus solicitudes y visitas{`\n`}desde un solo lugar.</Text></View><View style={styles.actions}><QuickActionCard variant="primary" title="Nueva solicitud" subtitle={'Inicia un nuevo proceso\nde crédito.'} icon="▤" onPress={() => void startApplication()} /><View style={styles.secondaryRow}><QuickActionCard title="Generar visita" subtitle="Captura una visita." icon="⌂" onPress={() => navigation.navigate('Placeholder', { title: 'Generar visita', subtitle: 'Esta función estará disponible en una siguiente fase del MVP.' })} /><View style={styles.secondaryGap} /><QuickActionCard title="Solicitudes" subtitle="Consulta tus registros." icon="▭" onPress={() => navigation.navigate('ApplicationsList')} /></View></View></AppScreen>;
+};
+
+const styles = StyleSheet.create({ intro: { paddingTop: spacing.lg, paddingBottom: spacing['2xl'] }, greeting: { color: colors.textPrimary, fontSize: 30, lineHeight: 36, fontWeight: '800', marginTop: spacing['2xl'] }, description: { color: colors.textSecondary, fontSize: 17, lineHeight: 25, marginTop: spacing.md }, actions: { width: '100%' }, secondaryRow: { flexDirection: 'row', alignItems: 'stretch', width: '100%' }, secondaryGap: { width: spacing.md } });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import { useForm } from 'react-hook-form';
-import { DocumentUploadCard, FormSelect, FormTextInput, GradientButton, QuickActionCard, SignaturePadCard } from './index';
+import { DocumentUploadCard, FormSelect, FormTextInput, PrimaryButton, QuickActionCard, SignaturePadCard } from './index';
 
 const FormHarness = () => {
   const { control } = useForm<{ email: string; phoneType: string }>({ defaultValues: { email: '', phoneType: '' } });
@@ -9,12 +9,12 @@ const FormHarness = () => {
 };
 
 describe('shared mobile UI', () => {
-  it('calls a gradient button action unless it is disabled', () => {
+  it('calls a primary button action unless it is disabled', () => {
     const onPress = jest.fn();
-    const { getByRole, rerender } = render(<GradientButton label="Continuar" onPress={onPress} />);
+    const { getByRole, rerender } = render(<PrimaryButton label="Continuar" onPress={onPress} />);
     fireEvent.press(getByRole('button', { name: 'Continuar' }));
     expect(onPress).toHaveBeenCalledTimes(1);
-    rerender(<GradientButton label="Continuar" disabled onPress={onPress} />);
+    rerender(<PrimaryButton label="Continuar" disabled onPress={onPress} />);
     fireEvent.press(getByRole('button', { name: 'Continuar' }));
     expect(onPress).toHaveBeenCalledTimes(1);
   });

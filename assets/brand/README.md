@@ -1,8 +1,7 @@
 # Brand assets
 
-Reemplazar los identificadores tipográficos de `BrandMarks` por los archivos reales cuando estén disponibles:
+Cuando el asset oficial esté disponible, sustituir el componente `CeamiWordmark` por:
 
 - `ceami-logo.png`
-- `rgc-goca-logo.png`
 
-El MVP no se bloquea por la ausencia de estos archivos; la marca está encapsulada en un componente único.
+La app no recrea logos con bordes, cajas o texto auxiliar. Mientras llega el asset, la marca se muestra únicamente como la palabra `CEAMI`.

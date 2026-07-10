@@ -1,4 +1,4 @@
-# CEAMI / RGC GOCA Mobile
+# CEAMI Mobile
 
 MVP mobile en React Native + Expo + TypeScript para demostrar el flujo de otorgamiento de crédito:
 
