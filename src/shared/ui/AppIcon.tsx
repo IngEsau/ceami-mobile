@@ -95,7 +95,7 @@ const icons = {
   info: Info,
 } as const;
 
-export const AppIcon = ({ name, size = 20, color = colors.brandBlue, strokeWidth = 2, accessibilityLabel }: AppIconProps) => {
+export const AppIcon = ({ name, size = 20, color = colors.royalBlue, strokeWidth = 2, accessibilityLabel }: AppIconProps) => {
   const Icon = icons[name];
   return <Icon size={size} color={color} strokeWidth={strokeWidth} accessibilityLabel={accessibilityLabel} accessible={Boolean(accessibilityLabel)} />;
 };

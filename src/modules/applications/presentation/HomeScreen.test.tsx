@@ -33,10 +33,10 @@ describe('HomeScreen', () => {
   });
 
   it('creates a visit draft and opens the visit documents flow', async () => {
-    const navigation = { navigate: jest.fn() } as never;
+    const navigation = { dispatch: jest.fn() } as never;
     const { getByRole } = render(<SafeAreaProvider><HomeScreen navigation={navigation} route={{} as never} /></SafeAreaProvider>);
     fireEvent.press(getByRole('button', { name: 'Generar visita' }));
-    await waitFor(() => expect((navigation as { navigate: jest.Mock }).navigate).toHaveBeenCalledWith('VisitDocuments'));
+    await waitFor(() => expect((navigation as { dispatch: jest.Mock }).dispatch).toHaveBeenCalledWith(expect.objectContaining({ type: 'PUSH', payload: { name: 'VisitDocuments', params: undefined } })));
     expect(useVisitStore.getState().currentVisit?.folio).toBe('VIS-000001');
   });
 });

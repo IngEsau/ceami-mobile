@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { StackActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../app/navigation/types';
 import { AppIcon, AppScreen, CeamiWordmark, QuickActionCard } from '../../../shared/ui';
@@ -28,7 +29,7 @@ export const HomeScreen = ({ navigation }: Props) => {
 
   const beginVisit = async () => {
     await startVisit();
-    navigation.navigate('VisitDocuments');
+    navigation.dispatch(StackActions.push('VisitDocuments'));
   };
 
   return (
