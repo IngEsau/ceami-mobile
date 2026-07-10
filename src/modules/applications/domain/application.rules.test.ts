@@ -1,0 +1,9 @@
+import { canSubmitApplication, documentsProgress, hasCompleteDocuments, hasDuplicateReferencePhones, wizardProgress } from './application.rules';
+import { emptyDocuments, CreditApplication } from './application.types';
+
+const base = (): CreditApplication => ({ id: '1', folio: 'SOL-000001', status: 'draft', createdAt: '', updatedAt: '', documents: emptyDocuments(), signature: { status: 'pending' } });
+describe('application rules', () => {
+  it('calculates document and wizard progress', () => { const application = base(); application.documents = application.documents.map((item) => ({ ...item, status: 'captured' })); application.generalData = {} as CreditApplication['generalData']; application.familyData = {}; expect(documentsProgress(application)).toBe(3); expect(wizardProgress(application)).toBe(2); expect(hasCompleteDocuments(application)).toBe(true); });
+  it('detects duplicated reference phones', () => { const application = base(); application.generalData = { phone: '5512345678' } as CreditApplication['generalData']; application.referencesData = { reference1: { name: 'Ana', address: 'Calle', phone: '5512345678' }, reference2: { name: 'Luis', address: 'Calle', phone: '5587654321' } }; expect(hasDuplicateReferencePhones(application)).toBe(true); });
+  it('only allows submission with signature and confirmation', () => { const application = base(); application.documents = application.documents.map((item) => ({ ...item, status: 'captured' })); application.generalData = {} as CreditApplication['generalData']; application.familyData = {}; application.workData = {} as CreditApplication['workData']; application.referencesData = { reference1: { name: 'Ana', address: 'Calle', phone: '5512345678' }, reference2: { name: 'Luis', address: 'Calle', phone: '5587654321' } }; application.signature = { status: 'captured' }; expect(canSubmitApplication(application, false)).toBe(false); expect(canSubmitApplication(application, true)).toBe(true); });
+});

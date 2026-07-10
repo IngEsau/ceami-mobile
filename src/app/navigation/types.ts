@@ -1,0 +1,1 @@
+export type RootStackParamList = { Login: undefined; Home: undefined; ApplicationStart: undefined; ApplicationIntro: undefined; Documents: undefined; Wizard: undefined; Signature: undefined; Success: undefined; ApplicationsList: undefined; Placeholder: { title: string; subtitle: string } };
