@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "CEAMI RGC GOCA",
+    "slug": "ceami-rgc-goca-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": { "backgroundColor": "#071735" },
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true },
+    "android": { "adaptiveIcon": { "backgroundColor": "#071735" } }
+  }
+}

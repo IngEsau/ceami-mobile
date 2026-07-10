@@ -1,0 +1,8 @@
+import { CreditApplication, emptyDocuments, RequiredDocumentType } from '../../domain/application.types';
+import { ApplicationDto, ApplicationMapper } from './application.api.types';
+
+// TODO: map the API payload once the backend contract is available. This adapter keeps REST shapes out of screens.
+export const applicationMapper: ApplicationMapper = {
+  toApplicationDto: (application) => ({ id: application.id, folio: application.folio, status: application.status, applicant_name: application.generalData?.clientName, created_at: application.createdAt, updated_at: application.updatedAt, documents: application.documents.map(({ type, status, uri }) => ({ type, status, uri })), payload: { generalData: application.generalData, familyData: application.familyData, workData: application.workData, referencesData: application.referencesData, signature: application.signature } }),
+  fromApplicationDto: (dto: ApplicationDto) => { const payload = dto.payload ?? {}; return { id: dto.id, folio: dto.folio, status: dto.status, applicantName: dto.applicant_name, createdAt: dto.created_at, updatedAt: dto.updated_at, documents: emptyDocuments().map((document) => { const remote = dto.documents.find((item) => item.type === document.type); return remote ? { ...document, status: remote.status as typeof document.status, uri: remote.uri } : document; }), generalData: payload.generalData as CreditApplication['generalData'], familyData: payload.familyData as CreditApplication['familyData'], workData: payload.workData as CreditApplication['workData'], referencesData: payload.referencesData as CreditApplication['referencesData'], signature: payload.signature as CreditApplication['signature'] }; },
+};
