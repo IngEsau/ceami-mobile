@@ -1,13 +1,23 @@
 {
   "expo": {
-    "name": "CEAMI RGC GOCA",
+    "name": "CEAMI Mobile",
     "slug": "ceami-rgc-goca-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "splash": { "backgroundColor": "#071735" },
+    "splash": { "backgroundColor": "#045795" },
     "assetBundlePatterns": ["**/*"],
     "ios": { "supportsTablet": true },
-    "android": { "adaptiveIcon": { "backgroundColor": "#071735" } }
+    "android": { "adaptiveIcon": { "backgroundColor": "#045795" } },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "CEAMI necesita acceso a la cámara para capturar la identificación, la selfie y la evidencia de la visita.",
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": false
+        }
+      ]
+    ]
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import { useForm } from 'react-hook-form';
-import { DocumentUploadCard, FormSelect, FormTextInput, PrimaryButton, QuickActionCard, SignaturePadCard } from './index';
+import { AppIcon, DocumentUploadCard, FormSelect, FormTextInput, PrimaryButton, QuickActionCard, SignaturePadCard } from './index';
 
 const FormHarness = () => {
   const { control } = useForm<{ email: string; phoneType: string }>({ defaultValues: { email: '', phoneType: '' } });
@@ -30,7 +30,7 @@ describe('shared mobile UI', () => {
 
   it('exposes the primary action cards', () => {
     const onPress = jest.fn();
-    const { getByRole } = render(<><QuickActionCard title="Nueva solicitud" subtitle="Comenzar" icon="+" onPress={onPress} /><DocumentUploadCard title="INE frente" subtitle="Captura" captured={false} onPress={onPress} /><SignaturePadCard captured={false} onPress={onPress} /></>);
+    const { getByRole } = render(<><QuickActionCard title="Nueva solicitud" subtitle="Comenzar" icon={<AppIcon name="file-plus" />} onPress={onPress} /><DocumentUploadCard title="INE frente" subtitle="Captura" captured={false} onPress={onPress} /><SignaturePadCard captured={false} onPress={onPress} /></>);
     fireEvent.press(getByRole('button', { name: 'Nueva solicitud' }));
     fireEvent.press(getByRole('button', { name: 'INE frente' }));
     fireEvent.press(getByRole('button', { name: 'Registrar firma' }));

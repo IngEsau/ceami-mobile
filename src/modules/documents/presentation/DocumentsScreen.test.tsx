@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { DocumentsScreen } from './DocumentsScreen';
 import { useApplicationStore } from '../../applications/application/application.store';
@@ -14,5 +14,12 @@ describe('DocumentsScreen', () => {
     const { getByText, queryByRole } = render(<SafeAreaProvider><DocumentsScreen navigation={{ goBack: jest.fn(), navigate: jest.fn() } as never} route={{} as never} /></SafeAreaProvider>);
     expect(getByText('0 de 3 archivos listos')).toBeTruthy();
     expect(queryByRole('button', { name: 'Siguiente' })).toBeNull();
+  });
+
+  it('opens the shared camera flow instead of a gallery-only document source', () => {
+    const navigation = { goBack: jest.fn(), navigate: jest.fn() } as never;
+    const { getByRole } = render(<SafeAreaProvider><DocumentsScreen navigation={navigation} route={{} as never} /></SafeAreaProvider>);
+    fireEvent.press(getByRole('button', { name: 'INE frente' }));
+    expect((navigation as { navigate: jest.Mock }).navigate).toHaveBeenCalledWith('CameraCapture', { target: 'ine_front', owner: 'application', returnTo: 'Documents' });
   });
 });

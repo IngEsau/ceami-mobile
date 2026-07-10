@@ -1,14 +1,53 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../app/navigation/types';
-import { AppHeader, AppScreen, BrandHeroCard, DocumentUploadCard, InfoNotice, PrimaryButton, ProgressSegments, SectionCard } from '../../../shared/ui';
+import { AppHeader, AppScreen, BrandHeroCard, DocumentUploadCard, InfoNotice, PrimaryButton, ProgressSegments, SectionCard, StickyActionFooter } from '../../../shared/ui';
 import { colors, spacing } from '../../../shared/theme';
 import { documentsProgress } from '../../applications/domain/application.rules';
 import { RequiredDocumentType } from '../../applications/domain/application.types';
 import { useApplicationStore } from '../../applications/application/application.store';
-import { useDocumentCapture } from './useDocumentCapture';
+
 type Props = NativeStackScreenProps<RootStackParamList, 'Documents'>;
-const items: { type: RequiredDocumentType; title: string; subtitle: string }[] = [{ type: 'ine_front', title: 'INE frente', subtitle: 'Captura la parte frontal de tu identificación.' }, { type: 'ine_back', title: 'INE reverso', subtitle: 'Captura la parte posterior de tu identificación.' }, { type: 'selfie', title: 'Selfie', subtitle: 'Tómate una foto clara para validar tu identidad.' }];
-export const DocumentsScreen = ({ navigation }: Props) => { const application = useApplicationStore((state) => state.currentApplication); const captureDocument = useDocumentCapture(); const count = application ? documentsProgress(application) : 0; return <AppScreen><AppHeader title="Documentación" showBack onBack={() => navigation.goBack()} /><BrandHeroCard title="Carga tu documentación" subtitle="Captura tu INE por ambos lados y una selfie para continuar." centered /><SectionCard><Text style={styles.heading}>Progreso de carga</Text><Text style={styles.secondary}>{count} de 3 archivos listos</Text><ProgressSegments current={count - 1} total={3} /></SectionCard>{items.map((item) => <DocumentUploadCard key={item.type} title={item.title} subtitle={item.subtitle} captured={Boolean(application?.documents.find((doc) => doc.type === item.type)?.status === 'captured')} onPress={() => void captureDocument(item.type)} />)}{count < 3 && <InfoNotice>Completa los tres archivos para habilitar el siguiente paso.</InfoNotice>}{count === 3 && <PrimaryButton label="Siguiente" onPress={() => navigation.navigate('Wizard')} />}</AppScreen>; };
-const styles = StyleSheet.create({ heading: { color: colors.textPrimary, fontSize: 25, fontWeight: '800', marginBottom: spacing.md }, secondary: { color: colors.textSecondary, fontSize: 17 } });
+
+const items: { type: RequiredDocumentType; title: string; subtitle: string }[] = [
+  { type: 'ine_front', title: 'INE frente', subtitle: 'Captura la parte frontal de tu identificación.' },
+  { type: 'ine_back', title: 'INE reverso', subtitle: 'Captura la parte posterior de tu identificación.' },
+  { type: 'selfie', title: 'Selfie', subtitle: 'Tómate una foto clara para validar tu identidad.' },
+];
+
+export const DocumentsScreen = ({ navigation }: Props) => {
+  const application = useApplicationStore((state) => state.currentApplication);
+  const count = application ? documentsProgress(application) : 0;
+
+  return (
+    <AppScreen footer={count === 3 ? <StickyActionFooter><PrimaryButton label="Siguiente" onPress={() => navigation.navigate('Wizard')} /></StickyActionFooter> : undefined}>
+      <AppHeader title="Documentación" showBack onBack={() => navigation.goBack()} />
+      <BrandHeroCard title="Carga tu documentación" subtitle="Captura tu INE por ambos lados y una selfie para continuar." centered />
+      <SectionCard>
+        <Text style={styles.heading}>Progreso de carga</Text>
+        <Text style={styles.secondary}>{count} de 3 archivos listos</Text>
+        <ProgressSegments current={count - 1} total={3} />
+      </SectionCard>
+      {items.map((item) => {
+        const document = application?.documents.find((entry) => entry.type === item.type);
+        return (
+          <DocumentUploadCard
+            key={item.type}
+            title={item.title}
+            subtitle={item.subtitle}
+            captured={document?.status === 'captured'}
+            imageUri={document?.uri}
+            onPress={() => navigation.navigate('CameraCapture', { target: item.type, owner: 'application', returnTo: 'Documents' })}
+          />
+        );
+      })}
+      {count < 3 && <InfoNotice>Completa los tres archivos para habilitar el siguiente paso.</InfoNotice>}
+    </AppScreen>
+  );
+};
+
+const styles = StyleSheet.create({
+  heading: { color: colors.textPrimary, fontSize: 25, fontWeight: '800', marginBottom: spacing.md },
+  secondary: { color: colors.textSecondary, fontSize: 17 },
+});
